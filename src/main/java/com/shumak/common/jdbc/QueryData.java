@@ -9,7 +9,10 @@ import com.shumak.common.employees.EmployeeForm;
 import com.shumak.common.mode.Mode;
 import com.shumak.common.sales.Sale;
 import com.shumak.common.sales.SaleForm;
+import com.shumak.common.service.ImageCodingService;
 import com.shumak.common.users.User;
+
+import java.io.File;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -81,6 +84,19 @@ public class QueryData {
             values.append(", ");
             values.append(auto.getModelYear());
             values.append(", ");
+
+            File f =  new File("D:\\ДИПЛОМ\\SpringServer\\src\\main\\resources\\images\\audia3.jpg");
+            try {
+                String encodstring = ImageCodingService.encodeFileToBase64Binary(f);
+
+                values.append("'");
+                values.append(encodstring);
+                values.append("'");
+                values.append(", ");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             values.append(auto.getMode().getId());
         } else if (data.getClass() == EmployeeForm.class) {
             EmployeeForm employee = (EmployeeForm) data;
@@ -163,7 +179,8 @@ public class QueryData {
                     String model = rs.getString(columns.get(1));
                     int sits =  rs.getInt(columns.get(2));
                     int modelYear =  rs.getInt(columns.get(3));
-                    int modeId = rs.getInt(columns.get(4));
+                    String image = rs.getString(columns.get(4));
+                    int modeId = rs.getInt(columns.get(5));
 
                     // Create statement
                     Statement modeStatement = connection.createStatement();
@@ -174,7 +191,7 @@ public class QueryData {
                     rsMode.next();
                     Mode mode = new Mode(rsMode.getInt(1), rsMode.getString(2), rsMode.getInt(3), rsMode.getDouble(4), rsMode.getDouble(5), rsMode.getDouble(6), rsMode.getInt(7));
 
-                    list.add((T) new Auto(id, model, sits, modelYear, mode));
+                    list.add((T) new Auto(id, model, sits, modelYear, image, mode));
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -219,7 +236,8 @@ public class QueryData {
                     String model = rsAuto.getString(2);
                     int sits =  rsAuto.getInt(3);
                     int modelYear =  rsAuto.getInt(4);
-                    int modeId = rsAuto.getInt(5);
+                    String image = rsAuto.getString(5);
+                    int modeId = rsAuto.getInt(6);
 
                     // Create statement
                     Statement modeStatement = connection.createStatement();
@@ -229,7 +247,7 @@ public class QueryData {
                     ResultSet rsMode = modeStatement.executeQuery(sqlMode);
                     rsMode.next();
                     Mode mode = new Mode(rsMode.getInt(1), rsMode.getString(2), rsMode.getInt(3), rsMode.getDouble(4), rsMode.getDouble(5), rsMode.getDouble(6), rsMode.getInt(7));
-                    Auto auto = new Auto(idAuto, model, sits, modelYear, mode);
+                    Auto auto = new Auto(idAuto, model, sits, modelYear, image, mode);
 
                     list.add((T) new Sale(id, date, employee, client, auto));
                 } catch (SQLException e) {

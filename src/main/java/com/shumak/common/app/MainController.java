@@ -10,12 +10,19 @@ import com.shumak.common.jdbc.QueryData;
 import com.shumak.common.mode.Mode;
 import com.shumak.common.sales.Sale;
 import com.shumak.common.sales.SaleForm;
+import com.shumak.common.service.ImageCodingService;
 import com.shumak.common.users.User;
 import com.shumak.common.users.UserForm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -27,7 +34,7 @@ public class MainController {
     public static HashMap<String, List<String>> tableMap = new HashMap<>();
 
     static {
-        tableMap.put("table_auto", List.of("id", "model", "sits", "year", "id_mode"));
+        tableMap.put("table_auto", List.of("id", "model", "sits", "year", "image", "id_mode"));
         tableMap.put("table_clients", List.of("id", "surname", "name", "patr", "phone"));
         tableMap.put("table_employee", List.of("id", "surname", "name", "patr", "position", "address", "phone"));
         tableMap.put("table_mode", List.of("id", "mode", "max_speed", "acceleration_time", "engine_volume", "gas_mileage", "price"));
@@ -210,7 +217,7 @@ public class MainController {
             }
         });
 
-        Auto auto = new Auto(id, autoForm.getModel(), autoForm.getSits(), autoForm.getModelYear(), autoForm.getMode());
+        Auto auto = new Auto(id, autoForm.getModel(), autoForm.getSits(), autoForm.getModelYear(), autoForm.getImage(), autoForm.getMode());
 
         QueryData.updateDataInDb("table_auto", tableMap.get("table_auto"), auto);
 

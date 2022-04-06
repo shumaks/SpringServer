@@ -6,6 +6,7 @@ public class AutoForm {
     private String model;
     private int sits;
     private int modelYear;
+    private String image;
     private Mode mode;
 
     public String getModel() {
@@ -30,6 +31,14 @@ public class AutoForm {
 
     public void setModelYear(int modelYear) {
         this.modelYear = modelYear;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public Mode getMode() {

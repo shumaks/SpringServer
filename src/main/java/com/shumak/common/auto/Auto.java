@@ -7,13 +7,15 @@ public class Auto {
     private String model;
     private int sits;
     private int modelYear;
+    private String image;
     private Mode mode;
 
-    public Auto(long id, String model, int sits, int modelYear, Mode mode) {
+    public Auto(long id, String model, int sits, int modelYear, String image, Mode mode) {
         this.id = id;
         this.model = model;
         this.sits = sits;
         this.modelYear = modelYear;
+        this.image = image;
         this.mode = mode;
     }
 
@@ -47,6 +49,14 @@ public class Auto {
 
     public void setModelYear(int modelYear) {
         this.modelYear = modelYear;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public Mode getMode() {
