@@ -5,8 +5,8 @@ import com.shumak.common.clients.Client;
 import com.shumak.common.employees.Employee;
 import com.shumak.common.jdbc.QueryData;
 import com.shumak.common.sales.Sale;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import java.sql.SQLException;
 import java.util.List;
 
@@ -18,7 +18,7 @@ public class AndroidRestController {
         return QueryData.getDataFromDb("table_auto", MainController.tableMap.get("table_auto"), Auto.class);
     }
 
-    @RequestMapping("/clients/gelAll")
+    @RequestMapping("/clients/getAll")
     public List<Client> getClientsFromAndroidClient() throws SQLException, ClassNotFoundException {
         return QueryData.getDataFromDb("table_clients", MainController.tableMap.get("table_clients"), Client.class);
     }
@@ -31,5 +31,17 @@ public class AndroidRestController {
     @RequestMapping("/employees/getAll")
     public List<Employee> getEmployeesFromAndroidClient() throws SQLException, ClassNotFoundException {
         return QueryData.getDataFromDb("table_employee", MainController.tableMap.get("table_employee"), Employee.class);
+    }
+
+    @RequestMapping(value = { "clients/addClient" }, method = RequestMethod.POST)
+    public Client addClientFromAndroidClient(@RequestBody Client client) throws SQLException, ClassNotFoundException {
+        QueryData.addDataToDb("table_clients", MainController.tableMap.get("table_clients"), client);
+        return client;
+    }
+
+    @RequestMapping(value = { "clients/updateClient" }, method = RequestMethod.POST)
+    public Client updateClientFromAndroidClient(@RequestBody Client client) throws SQLException, ClassNotFoundException {
+        QueryData.updateDataInDb("table_clients", MainController.tableMap.get("table_clients"), client);
+        return client;
     }
 }

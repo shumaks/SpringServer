@@ -80,7 +80,7 @@
     <repositories>
         <repository>
             <id>Jumpmind</id>
-            <url>http://maven.jumpmind.com/repo/</url>
+            <url>https://maven.jumpmind.com/repo/</url>
         </repository>
     </repositories>
 </project>
