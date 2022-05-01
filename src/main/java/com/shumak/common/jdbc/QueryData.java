@@ -282,7 +282,8 @@ public class QueryData {
             update = columns.get(1) + " = '" + auto.getModel() +"', " +
                     columns.get(2) + " = " + auto.getSits() + ", " +
                     columns.get(3) + " = " + auto.getModelYear() + ", " +
-                    columns.get(4) + " = " + auto.getMode().getId();
+                    columns.get(4) + " = '" + auto.getImage() + "', " +
+                    columns.get(5) + " = " + auto.getMode().getId();
             condition = "id = " + auto.getId();
         } else if (data.getClass() == Employee.class) {
             Employee employee = (Employee) data;

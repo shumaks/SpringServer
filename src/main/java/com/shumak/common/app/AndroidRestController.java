@@ -4,6 +4,7 @@ import com.shumak.common.auto.Auto;
 import com.shumak.common.clients.Client;
 import com.shumak.common.employees.Employee;
 import com.shumak.common.jdbc.QueryData;
+import com.shumak.common.mode.Mode;
 import com.shumak.common.sales.Sale;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +17,17 @@ public class AndroidRestController {
     @RequestMapping("/auto/getAll")
     public List<Auto> getAutoFromAndroidClient() throws SQLException, ClassNotFoundException {
         return QueryData.getDataFromDb("table_auto", MainController.tableMap.get("table_auto"), Auto.class);
+    }
+
+    @RequestMapping(value = { "auto/updateAuto" }, method = RequestMethod.POST)
+    public Auto updateAutoFromAndroidClient(@RequestBody Auto auto) throws SQLException, ClassNotFoundException {
+        QueryData.updateDataInDb("table_auto", MainController.tableMap.get("table_auto"), auto);
+        return auto;
+    }
+
+    @RequestMapping("/mode/getAll")
+    public List<Mode> geModeFromAndroidClient() throws SQLException, ClassNotFoundException {
+        return QueryData.getDataFromDb("table_mode", MainController.tableMap.get("table_mode"), Mode.class);
     }
 
     @RequestMapping("/clients/getAll")
