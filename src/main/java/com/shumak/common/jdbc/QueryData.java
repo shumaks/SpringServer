@@ -85,12 +85,9 @@ public class QueryData {
             values.append(auto.getModelYear());
             values.append(", ");
 
-            File f =  new File("D:\\ДИПЛОМ\\SpringServer\\src\\main\\resources\\images\\audia3.jpg");
             try {
-                String encodstring = ImageCodingService.encodeFileToBase64Binary(f);
-
                 values.append("'");
-                values.append(encodstring);
+                values.append(auto.getImage());
                 values.append("'");
                 values.append(", ");
             } catch (Exception e) {
