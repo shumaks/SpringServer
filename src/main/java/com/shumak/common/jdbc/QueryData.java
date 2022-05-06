@@ -11,6 +11,7 @@ import com.shumak.common.sales.Sale;
 import com.shumak.common.sales.SaleForm;
 import com.shumak.common.service.ImageCodingService;
 import com.shumak.common.users.User;
+import com.shumak.common.users.UserForm;
 
 import java.io.File;
 import java.sql.Connection;
@@ -73,6 +74,19 @@ public class QueryData {
             values.append(", ");
             values.append("'");
             values.append(client.getPhone());
+            values.append("'");
+        } else if (data.getClass() == UserForm.class) {
+            UserForm user = (UserForm) data;
+            values.append("'");
+            values.append(user.getLogin());
+            values.append("'");
+            values.append(", ");
+            values.append("'");
+            values.append(user.getPassword());
+            values.append("'");
+            values.append(", ");
+            values.append("'");
+            values.append(user.getAccessRights());
             values.append("'");
         } else if (data.getClass() == AutoForm.class) {
             AutoForm auto = (AutoForm) data;
@@ -160,7 +174,7 @@ public class QueryData {
         while (rs.next()) {
             if (classType == User.class) {
                 try {
-                    list.add((T) new User(rs.getInt(columns.get(0)), rs.getString(columns.get(1)), rs.getString(columns.get(2))));
+                    list.add((T) new User(rs.getInt(columns.get(0)), rs.getString(columns.get(1)), rs.getString(columns.get(2)), rs.getString(columns.get(3))));
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }

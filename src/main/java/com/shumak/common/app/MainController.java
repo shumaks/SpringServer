@@ -39,7 +39,7 @@ public class MainController {
         tableMap.put("table_employee", List.of("id", "surname", "name", "patr", "position", "address", "phone"));
         tableMap.put("table_mode", List.of("id", "mode", "max_speed", "acceleration_time", "engine_volume", "gas_mileage", "price"));
         tableMap.put("table_sales", List.of("id", "date", "id_emp", "id_client", "id_auto"));
-        tableMap.put("table_users", List.of("id", "login", "password"));
+        tableMap.put("table_users", List.of("id", "login", "password", "access_rights"));
     }
 
     @Value("${welcome.message}")

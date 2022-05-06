@@ -10,10 +10,15 @@ import com.shumak.common.jdbc.QueryData;
 import com.shumak.common.mode.Mode;
 import com.shumak.common.sales.Sale;
 import com.shumak.common.sales.SaleForm;
+import com.shumak.common.users.User;
+import com.shumak.common.users.UserForm;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 @RestController
 public class AndroidRestController {
@@ -136,5 +141,41 @@ public class AndroidRestController {
     public Long deleteAutoFromAndroidClient(@RequestBody Long id) throws SQLException, ClassNotFoundException {
         QueryData.deleteDataFromDb("table_auto", id);
         return id;
+    }
+
+    @RequestMapping(value = { "users/auth" }, method = RequestMethod.POST)
+    public String authUserFromAndroidClient(@RequestBody User userToLogin) throws SQLException, ClassNotFoundException {
+        List<User> list = QueryData.getDataFromDb("table_users", MainController.tableMap.get("table_users"), User.class);
+
+        AtomicReference<String> returnedValue = new AtomicReference<>("empty");
+
+        list.forEach(user -> {
+            if (Objects.equals(user.getLogin(), userToLogin.getLogin()) && Objects.equals(user.getPassword(), userToLogin.getPassword())) {
+                returnedValue.set(user.getAccessRights());
+            }
+        });
+
+        return returnedValue.get();
+    }
+
+    @RequestMapping(value = { "users/addUser" }, method = RequestMethod.POST)
+    public Boolean addClientFromAndroidClient(@RequestBody User user) throws SQLException, ClassNotFoundException {
+        UserForm userForm = new UserForm();
+        userForm.setLogin(user.getLogin());
+        userForm.setPassword(user.getPassword());
+        userForm.setAccessRights(user.getAccessRights());
+        List<User> list = QueryData.getDataFromDb("table_users", MainController.tableMap.get("table_users"), User.class);
+        AtomicBoolean isUserAdded = new AtomicBoolean(true);
+
+        list.forEach(u -> {
+            if (Objects.equals(u.getLogin(), user.getLogin())) {
+                isUserAdded.set(false);
+            }
+        });
+        if (isUserAdded.get()) {
+            QueryData.addDataToDb("table_users", MainController.tableMap.get("table_users"), userForm);
+        }
+
+        return isUserAdded.get();
     }
 }

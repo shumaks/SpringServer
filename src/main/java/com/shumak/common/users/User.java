@@ -5,10 +5,13 @@ public class User {
     private String login;
     private String password;
 
-    public User(long id, String login, String password) {
+    private String accessRights;
+
+    public User(long id, String login, String password, String accessRights) {
         this.id = id;
         this.login = login;
         this.password = password;
+        this.accessRights = accessRights;
     }
 
     public long getId() {
@@ -33,5 +36,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getAccessRights() {
+        return accessRights;
+    }
+
+    public void setAccessRights(String accessRights) {
+        this.accessRights = accessRights;
     }
 }
