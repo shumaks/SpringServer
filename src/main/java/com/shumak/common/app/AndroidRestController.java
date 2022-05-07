@@ -8,6 +8,7 @@ import com.shumak.common.employees.Employee;
 import com.shumak.common.employees.EmployeeForm;
 import com.shumak.common.jdbc.QueryData;
 import com.shumak.common.mode.Mode;
+import com.shumak.common.mode.ModeForm;
 import com.shumak.common.sales.Sale;
 import com.shumak.common.sales.SaleForm;
 import com.shumak.common.users.User;
@@ -49,6 +50,31 @@ public class AndroidRestController {
     @RequestMapping("/mode/getAll")
     public List<Mode> getModeFromAndroidClient() throws SQLException, ClassNotFoundException {
         return QueryData.getDataFromDb("table_mode", MainController.tableMap.get("table_mode"), Mode.class);
+    }
+
+    @RequestMapping(value = { "mode/addMode" }, method = RequestMethod.POST)
+    public Mode addModeFromAndroidClient(@RequestBody Mode mode) throws SQLException, ClassNotFoundException {
+        ModeForm modeForm = new ModeForm();
+        modeForm.setName(mode.getName());
+        modeForm.setMaxSpeed(mode.getMaxSpeed());
+        modeForm.setAccelerationTime(mode.getAccelerationTime());
+        modeForm.setEngineVolume(mode.getEngineVolume());
+        modeForm.setGasMileage(mode.getGasMileage());
+        modeForm.setPrice(mode.getPrice());
+        QueryData.addDataToDb("table_mode", MainController.tableMap.get("table_mode"), modeForm);
+        return mode;
+    }
+
+    @RequestMapping(value = { "mode/updateMode" }, method = RequestMethod.POST)
+    public Mode updateModeFromAndroidClient(@RequestBody Mode mode) throws SQLException, ClassNotFoundException {
+        QueryData.updateDataInDb("table_mode", MainController.tableMap.get("table_mode"), mode);
+        return mode;
+    }
+
+    @RequestMapping(value = { "mode/deleteMode" }, method = RequestMethod.POST)
+    public Long deleteModeFromAndroidClient(@RequestBody Long id) throws SQLException, ClassNotFoundException {
+        QueryData.deleteDataFromDb("table_mode", id);
+        return id;
     }
 
     @RequestMapping("/clients/getAll")

@@ -7,6 +7,7 @@ import com.shumak.common.clients.ClientForm;
 import com.shumak.common.employees.Employee;
 import com.shumak.common.employees.EmployeeForm;
 import com.shumak.common.mode.Mode;
+import com.shumak.common.mode.ModeForm;
 import com.shumak.common.sales.Sale;
 import com.shumak.common.sales.SaleForm;
 import com.shumak.common.service.ImageCodingService;
@@ -28,20 +29,6 @@ public class QueryData {
         Connection connection = ConnectionUtils.getConnection();
 
         Statement statement = connection.createStatement();
-
-        if (Objects.equals(table, "table_auto")) {
-            String sqlAuto = "Delete from table_sales where id_auto = " + id;
-            statement.executeUpdate(sqlAuto);
-        } else if (Objects.equals(table, "table_clients")) {
-            String sqlClient = "Delete from table_sales where id_client = " + id;
-            statement.executeUpdate(sqlClient);
-        } else if (Objects.equals(table, "table_employee")) {
-            String sqlEmp = "Delete from table_sales where id_emp = " + id;
-            statement.executeUpdate(sqlEmp);
-        } else if (Objects.equals(table, "table_mode")) {
-            String sqlMode = "Delete from table_auto where id_mode = " + id;
-            statement.executeUpdate(sqlMode);
-        }
 
         String sql = "Delete from " + table + " where id = " + id;
 
@@ -134,6 +121,21 @@ public class QueryData {
             values.append("'");
             values.append(employee.getPhone());
             values.append("'");
+        } else if (data.getClass() == ModeForm.class) {
+            ModeForm mode = (ModeForm) data;
+            values.append("'");
+            values.append(mode.getName());
+            values.append("'");
+            values.append(", ");
+            values.append(mode.getMaxSpeed());
+            values.append(", ");
+            values.append(mode.getAccelerationTime());
+            values.append(", ");
+            values.append(mode.getEngineVolume());
+            values.append(", ");
+            values.append(mode.getGasMileage());
+            values.append(", ");
+            values.append(mode.getPrice());
         } else {
             SaleForm sale = (SaleForm) data;
             values.append("'");
@@ -296,6 +298,15 @@ public class QueryData {
                     columns.get(4) + " = '" + auto.getImage() + "', " +
                     columns.get(5) + " = " + auto.getMode().getId();
             condition = "id = " + auto.getId();
+        } else if (data.getClass() == Mode.class) {
+            Mode mode = (Mode) data;
+            update = columns.get(1) + " = '" + mode.getName() +"', " +
+                    columns.get(2) + " = " + mode.getMaxSpeed() + ", " +
+                    columns.get(3) + " = " + mode.getAccelerationTime() + ", " +
+                    columns.get(4) + " = " + mode.getEngineVolume() + ", " +
+                    columns.get(5) + " = " + mode.getGasMileage() + ", " +
+                    columns.get(6) + " = " + mode.getPrice();
+            condition = "id = " + mode.getId();
         } else if (data.getClass() == Employee.class) {
             Employee employee = (Employee) data;
             update = columns.get(1) + " = '" + employee.getSurname() +"', " +
