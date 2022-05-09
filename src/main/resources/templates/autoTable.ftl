@@ -2,12 +2,12 @@
 
 <html>
 <head>
-    <title>Auto Table</title>
+    <title>Автомобили</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="chooseTable">Home</a>
+    <a class="navbar-brand" href="chooseTable">Главная</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -15,19 +15,19 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-                <a class="nav-link" href="clientsTable">Clients</a>
+                <a class="nav-link" href="clientsTable">Клиенты</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="employeesTable">Employees</a>
+                <a class="nav-link" href="employeesTable">Работники</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="autoTable">Auto</a>
+                <a class="nav-link" href="autoTable">Автомобили</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="modeTable">Mode</a>
+                <a class="nav-link" href="modeTable">Модификации</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="salesTable">Sales</a>
+                <a class="nav-link" href="salesTable">Заказы</a>
             </li>
         </ul>
     </div>
@@ -36,15 +36,15 @@
     <table class="table">
         <thead class="thead-light">
         <tr>
-            <th>Model</th>
-            <th>Sits</th>
-            <th>Year</th>
-            <th>Mode name</th>
-            <th>Max speed</th>
-            <th>Acceleration time</th>
-            <th>Engine volume</th>
-            <th>Gas mileage</th>
-            <th>Price</th>
+            <th>Модель</th>
+            <th>Количество мест</th>
+            <th>Год выпуска</th>
+            <th>Модификация</th>
+            <th>Максимальная скорость, км/ч</th>
+            <th>Разгон до 100 км/ч, сек</th>
+            <th>Объем двигателя, л</th>
+            <th>Расход топлива, литров на 100 км</th>
+            <th>Цена, руб.</th>
         </tr>
         </thead>
         <tbody>

@@ -7,7 +7,7 @@
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="chooseTable">Home</a>
+    <a class="navbar-brand" href="chooseTable">Главная</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -15,19 +15,19 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-                <a class="nav-link" href="clientsTable">Clients</a>
+                <a class="nav-link" href="clientsTable">Клиенты</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="employeesTable">Employees</a>
+                <a class="nav-link" href="employeesTable">Работники</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="autoTable">Auto</a>
+                <a class="nav-link" href="autoTable">Автомобили</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="modeTable">Mode</a>
+                <a class="nav-link" href="modeTable">Модификации</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="salesTable">Sales</a>
+                <a class="nav-link" href="salesTable">Заказы</a>
             </li>
         </ul>
     </div>
@@ -36,12 +36,12 @@
     <table class="table">
         <thead class="thead-light">
         <tr>
-            <th scope="col">Name</th>
-            <th scope="col">Max speed</th>
-            <th scope="col">Acceleration time</th>
-            <th scope="col">Engine volume</th>
-            <th scope="col">Gas mileage</th>
-            <th scope="col">Price</th>
+            <th scope="col">Название</th>
+            <th scope="col">Максимальная скорость, км/ч</th>
+            <th scope="col">Разгон до 100 км/ч, сек</th>
+            <th scope="col">Объем двигателя, л</th>
+            <th scope="col">Расход топлива, литров на 100 км</th>
+            <th scope="col">Цена, руб.</th>
         </tr>
         </thead>
         <tbody>
@@ -55,12 +55,12 @@
                 <td>${mode.price}</td>
                 <td>
                     <form action="/modeTable/delete/${mode.id}" method="post">
-                        <input class="btn btn-secondary" type="submit" value="Delete">
+                        <input class="btn btn-secondary" type="submit" value="Удалить">
                     </form>
                 </td>
                 <td>
                     <form action="/modeTable/update/${mode.id}" method="post">
-                        <input class="btn btn-secondary" type="submit" value="Update">
+                        <input class="btn btn-secondary" type="submit" value="Редактировать">
                     </form>
                 </td>
             </tr>
@@ -68,6 +68,6 @@
         </tbody>
     </table>
 </div>
-<a type="button" class="btn btn-secondary" href="addMode">Add mode</a>
+<a type="button" class="btn btn-secondary" href="addMode">Добавить</a>
 </body>
 </html>

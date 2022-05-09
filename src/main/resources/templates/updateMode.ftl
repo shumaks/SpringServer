@@ -2,7 +2,7 @@
 
 <html>
 <head>
-    <title>Update client</title>
+    <title>Редактирование модификации</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 </head>
 <body>
@@ -14,15 +14,15 @@
 
 <div>
     <fieldset>
-        <legend>Update mode info</legend>
+        <legend>Редактирование модификации</legend>
         <form name="mode" action="" method="POST">
-            Name: <@spring.formInput "modeForm.name" "" "text"/>    <br/>
-            Max speed: <@spring.formInput "modeForm.maxSpeed" "" "text"/>    <br/>
-            Acceleration time: <@spring.formInput "modeForm.accelerationTime" "" "text"/>    <br/>
-            Engine volume: <@spring.formInput "modeForm.engineVolume" "" "text"/>    <br/>
-            Gas mileage: <@spring.formInput "modeForm.gasMileage" "" "text"/>    <br/>
-            Price: <@spring.formInput "modeForm.price" "" "text"/>    <br/>
-            <input class="btn btn-primary" type="submit" value="Update" />
+            Название: <@spring.formInput "modeForm.name" "" "text"/>    <br/>
+            Максимальная скорость: <@spring.formInput "modeForm.maxSpeed" "" "text"/> км/ч   <br/>
+            Разгон до 100 км/ч: <@spring.formInput "modeForm.accelerationTime" "" "text"/> секунд   <br/>
+            Объем двигателя: <@spring.formInput "modeForm.engineVolume" "" "text"/> литров   <br/>
+            Расход топлива: <@spring.formInput "modeForm.gasMileage" "" "text"/> литров на 100 км   <br/>
+            Цена: <@spring.formInput "modeForm.price" "" "text"/> рублей   <br/>
+            <input class="btn btn-primary" type="submit" value="Сохранить" />
         </form>
     </fieldset>
 </div>

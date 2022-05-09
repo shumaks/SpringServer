@@ -17,6 +17,7 @@ public class Applications {
         FreeMarkerViewResolver resolver = new FreeMarkerViewResolver();
         resolver.setCache(true);
         resolver.setPrefix("");
+        resolver.setContentType("text/html; charset=utf-8");
         resolver.setSuffix(".ftl");
         return resolver;
     }

@@ -75,7 +75,7 @@ public class MainController {
         if (Objects.equals(returnedValue.get(), "redirect:/chooseTable")) {
             return "redirect:/chooseTable";
         } else {
-            String error = "Incorrect login or password!";
+            String error = "Неверный логин или пароль!";
             model.addAttribute("errorMessage", error);
             return "index";
         }

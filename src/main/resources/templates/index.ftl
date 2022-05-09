@@ -21,13 +21,13 @@
 <div>
     <fieldset>
         <div style="text-align: center;">
-        <legend>Enter login and password</legend>
+        <legend>Авторизация</legend>
         <form name="user" action="" method="POST">
-            Login: <@spring.formInput "userForm.login" "" "text" />  <br/>
+            Логин: <@spring.formInput "userForm.login" "" "text" />  <br/>
             <br/>
-            Password: <@spring.formInput "userForm.password" "" "text"/> <br/>
+            Пароль: <@spring.formInput "userForm.password" "" "text"/> <br/>
             <br/>
-            <input class="btn btn-primary" type="submit" value="Submit" />
+            <input class="btn btn-primary" type="submit" value="Войти" />
         </form>
         </div>
     </fieldset>
