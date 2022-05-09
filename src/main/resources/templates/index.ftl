@@ -25,7 +25,7 @@
         <form name="user" action="" method="POST">
             Логин: <@spring.formInput "userForm.login" "" "text" />  <br/>
             <br/>
-            Пароль: <@spring.formInput "userForm.password" "" "text"/> <br/>
+            Пароль: <@spring.formInput "userForm.password" "" "password"/> <br/>
             <br/>
             <input class="btn btn-primary" type="submit" value="Войти" />
         </form>

@@ -11,6 +11,7 @@ import com.shumak.common.mode.Mode;
 import com.shumak.common.mode.ModeForm;
 import com.shumak.common.sales.Sale;
 import com.shumak.common.sales.SaleForm;
+import com.shumak.common.service.AuthService;
 import com.shumak.common.service.ImageCodingService;
 import com.shumak.common.users.User;
 import com.shumak.common.users.UserForm;
@@ -33,6 +34,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class MainController {
 
     public static HashMap<String, List<String>> tableMap = new HashMap<>();
+    public static AuthService authService = new AuthService();
 
     static {
         tableMap.put("table_auto", List.of("id", "model", "sits", "year", "image", "id_mode"));
@@ -54,6 +56,7 @@ public class MainController {
         UserForm userForm = new UserForm();
         model.addAttribute("userForm", userForm);
 
+        authService.setCurrentUser(null);
         return "index";
     }
 
@@ -68,6 +71,7 @@ public class MainController {
 
         list.forEach(user -> {
             if (Objects.equals(user.getLogin(), login) && Objects.equals(user.getPassword(), password)) {
+                authService.setCurrentUser(user);
                 returnedValue.set("redirect:/chooseTable");
             }
         });
@@ -84,7 +88,12 @@ public class MainController {
     @RequestMapping(value = { "/chooseTable" }, method = RequestMethod.GET)
     public String chooseTable(Model model) {
 
-        return "chooseTable";
+        if (authService.getCurrentUser() != null) {
+            model.addAttribute("userForm", authService.getCurrentUser());
+            return "chooseTable";
+        } else {
+            return "redirect:/";
+        }
     }
 
     @RequestMapping(value = { "/clientsTable" }, method = RequestMethod.GET)
@@ -94,7 +103,12 @@ public class MainController {
 
         model.addAttribute("clients", list);
 
-        return "clientsTable";
+        if (authService.getCurrentUser() != null) {
+            model.addAttribute("userForm", authService.getCurrentUser());
+            return "clientsTable";
+        } else {
+            return "redirect:/";
+        }
     }
 
     @PostMapping("/clientsTable/delete/{id}")
@@ -119,8 +133,11 @@ public class MainController {
                 model.addAttribute("clientForm", client);
             }
         });
-
-        return "updateClient";
+        if (authService.getCurrentUser() != null) {
+            return "updateClient";
+        } else {
+            return "redirect:/";
+        }
     }
 
     @RequestMapping(value = { "/updateClient/{id}" }, method = RequestMethod.POST)
@@ -141,7 +158,11 @@ public class MainController {
         ClientForm clientForm = new ClientForm();
         model.addAttribute("clientForm", clientForm);
 
-        return "addClient";
+        if (authService.getCurrentUser() != null) {
+            return "addClient";
+        } else {
+            return "redirect:/";
+        }
     }
 
     @RequestMapping(value = { "/addClient" }, method = RequestMethod.POST)
@@ -163,7 +184,12 @@ public class MainController {
         }
         String error = "All fields are required!";
         model.addAttribute("errorMessage", error);
-        return "addClient";
+
+        if (authService.getCurrentUser() != null) {
+            return "addClient";
+        } else {
+            return "redirect:/";
+        }
     }
 
     @RequestMapping(value = { "/autoTable" }, method = RequestMethod.GET)
@@ -173,7 +199,12 @@ public class MainController {
 
         model.addAttribute("autos", list);
 
-        return "autoTable";
+        if (authService.getCurrentUser() != null) {
+            model.addAttribute("userForm", authService.getCurrentUser());
+            return "autoTable";
+        } else {
+            return "redirect:/";
+        }
     }
 
     @PostMapping("/autoTable/delete/{id}")
@@ -205,7 +236,11 @@ public class MainController {
             }
         });
 
-        return "updateAuto";
+        if (authService.getCurrentUser() != null) {
+            return "updateAuto";
+        } else {
+            return "redirect:/";
+        }
     }
 
     @RequestMapping(value = { "/updateAuto/{id}" }, method = RequestMethod.POST)
@@ -234,7 +269,11 @@ public class MainController {
         List<Mode> listMode = QueryData.getDataFromDb("table_mode", tableMap.get("table_mode"), Mode.class);
         model.addAttribute("mode", listMode);
 
-        return "addAuto";
+        if (authService.getCurrentUser() != null) {
+            return "addAuto";
+        } else {
+            return "redirect:/";
+        }
     }
 
     @RequestMapping(value = { "/addAuto" }, method = RequestMethod.POST)
@@ -255,7 +294,12 @@ public class MainController {
         }
         String error = "All fields are required!";
         model.addAttribute("errorMessage", error);
-        return "addAuto";
+
+        if (authService.getCurrentUser() != null) {
+            return "addAuto";
+        } else {
+            return "redirect:/";
+        }
     }
 
     @RequestMapping(value = { "/modeTable" }, method = RequestMethod.GET)
@@ -265,7 +309,12 @@ public class MainController {
 
         model.addAttribute("modes", list);
 
-        return "modeTable";
+        if (authService.getCurrentUser() != null) {
+            model.addAttribute("userForm", authService.getCurrentUser());
+            return "modeTable";
+        } else {
+            return "redirect:/";
+        }
     }
 
     @PostMapping("/modeTable/delete/{id}")
@@ -291,7 +340,11 @@ public class MainController {
             }
         });
 
-        return "updateMode";
+        if (authService.getCurrentUser() != null) {
+            return "updateMode";
+        } else {
+            return "redirect:/";
+        }
     }
 
     @RequestMapping(value = { "/updateMode/{id}" }, method = RequestMethod.POST)
@@ -312,7 +365,11 @@ public class MainController {
         ModeForm modeForm = new ModeForm();
         model.addAttribute("modeForm", modeForm);
 
-        return "addMode";
+        if (authService.getCurrentUser() != null) {
+            return "addMode";
+        } else {
+            return "redirect:/";
+        }
     }
 
     @RequestMapping(value = { "/addMode" }, method = RequestMethod.POST)
@@ -327,7 +384,12 @@ public class MainController {
         }
         String error = "All fields are required!";
         model.addAttribute("errorMessage", error);
-        return "addMode";
+
+        if (authService.getCurrentUser() != null) {
+            return "addMode";
+        } else {
+            return "redirect:/";
+        }
     }
 
     @RequestMapping(value = { "/employeesTable" }, method = RequestMethod.GET)
@@ -336,7 +398,12 @@ public class MainController {
         List<Employee> list = QueryData.getDataFromDb("table_employee", tableMap.get("table_employee"), Employee.class);
 
         model.addAttribute("employees", list);
-        return "employeesTable";
+
+        if ( Objects.equals(authService.getCurrentUser().getAccessRights(), "director")) {
+            return "employeesTable";
+        } else {
+            return "redirect:/";
+        }
     }
 
     @PostMapping("/employeesTable/delete/{id}")
@@ -362,7 +429,11 @@ public class MainController {
             }
         });
 
-        return "updateEmployee";
+        if (Objects.equals(authService.getCurrentUser().getAccessRights(), "director")) {
+            return "updateEmployee";
+        } else {
+            return "redirect:/";
+        }
     }
 
     @RequestMapping(value = { "/updateEmployee/{id}" }, method = RequestMethod.POST)
@@ -383,7 +454,11 @@ public class MainController {
         EmployeeForm employeeForm = new EmployeeForm();
         model.addAttribute("employeeForm", employeeForm);
 
-        return "addEmployee";
+        if (Objects.equals(authService.getCurrentUser().getAccessRights(), "director")) {
+            return "addEmployee";
+        } else {
+            return "redirect:/";
+        }
     }
 
     @RequestMapping(value = { "/addEmployee" }, method = RequestMethod.POST)
@@ -409,7 +484,12 @@ public class MainController {
         }
         String error = "All fields are required!";
         model.addAttribute("errorMessage", error);
-        return "addEmployee";
+
+        if (Objects.equals(authService.getCurrentUser().getAccessRights(), "director")) {
+            return "addEmployee";
+        } else {
+            return "redirect:/";
+        }
     }
 
     @RequestMapping(value = { "/salesTable" }, method = RequestMethod.GET)
@@ -417,7 +497,13 @@ public class MainController {
         List<Sale> list = QueryData.getDataFromDb("table_sales", tableMap.get("table_sales"), Sale.class);
 
         model.addAttribute("sales", list);
-        return "salesTable";
+
+        if (authService.getCurrentUser() != null) {
+            model.addAttribute("userForm", authService.getCurrentUser());
+            return "salesTable";
+        } else {
+            return "redirect:/";
+        }
     }
 
     @PostMapping("/salesTable/delete/{id}")
@@ -454,8 +540,11 @@ public class MainController {
                 }
             }
         });
-
-        return "updateSale";
+        if (authService.getCurrentUser() != null) {
+            return "updateSale";
+        } else {
+            return "redirect:/";
+        }
     }
 
     @RequestMapping(value = { "/updateSale/{id}" }, method = RequestMethod.POST)
@@ -509,7 +598,11 @@ public class MainController {
         model.addAttribute("clients", listClients);
         model.addAttribute("autos", listAuto);
 
-        return "addSale";
+        if (authService.getCurrentUser() != null) {
+            return "addSale";
+        } else {
+            return "redirect:/";
+        }
     }
 
     @RequestMapping(value = { "/addSale" }, method = RequestMethod.POST)

@@ -19,9 +19,11 @@
             <li class="nav-item">
                 <a class="nav-link" href="clientsTable">Клиенты</a>
             </li>
+            <#if userForm.accessRights == 'director'>
             <li class="nav-item">
                 <a class="nav-link" href="employeesTable">Работники</a>
             </li>
+            </#if>
             <li class="nav-item">
                 <a class="nav-link" href="autoTable">Автомобили</a>
             </li>
@@ -30,6 +32,9 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="salesTable">Заказы</a>
+            </li>
+            <li class="nav-item">
+                <a class="btn btn-primary" href="/">Выйти</a>
             </li>
         </ul>
     </div>
