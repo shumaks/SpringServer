@@ -72,12 +72,12 @@ public class MainController {
         list.forEach(user -> {
             if (Objects.equals(user.getLogin(), login) && Objects.equals(user.getPassword(), password)) {
                 authService.setCurrentUser(user);
-                returnedValue.set("redirect:/chooseTable");
+                returnedValue.set("redirect:/home");
             }
         });
 
-        if (Objects.equals(returnedValue.get(), "redirect:/chooseTable")) {
-            return "redirect:/chooseTable";
+        if (Objects.equals(returnedValue.get(), "redirect:/home")) {
+            return "redirect:/home";
         } else {
             String error = "Неверный логин или пароль!";
             model.addAttribute("errorMessage", error);
@@ -85,12 +85,51 @@ public class MainController {
         }
     }
 
-    @RequestMapping(value = { "/chooseTable" }, method = RequestMethod.GET)
-    public String chooseTable(Model model) {
+    @RequestMapping(value = { "/registration" }, method = RequestMethod.GET)
+    public String registration(Model model) {
+        UserForm userForm = new UserForm();
+        model.addAttribute("userForm", userForm);
+
+        if (authService.getCurrentUser() == null) {
+            return "registration";
+        } else {
+            return "redirect:/home";
+        }
+    }
+
+    @RequestMapping(value = { "/registration" }, method = RequestMethod.POST)
+    public String userRegistration(Model model, //
+                            @ModelAttribute("userForm") UserForm userForm) throws SQLException, ClassNotFoundException {
+        String login = userForm.getLogin();
+        String password = userForm.getPassword();
+        List<User> list = QueryData.getDataFromDb("table_users", tableMap.get("table_users"), User.class);
+
+        AtomicReference<String> returnedValue = new AtomicReference<>("redirect:/home");
+
+        list.forEach(user -> {
+            if (Objects.equals(user.getLogin(), login)) {
+                returnedValue.set("error");
+            }
+        });
+
+        if (Objects.equals(returnedValue.get(), "redirect:/home")) {
+            User user = new User(0, login, password, "manager");
+            authService.setCurrentUser(user);
+            QueryData.addDataToDb("table_users", MainController.tableMap.get("table_users"), userForm);
+            return "redirect:/home";
+        } else {
+            String error = "Пользователь с таким логином уже существует!";
+            model.addAttribute("errorMessage", error);
+            return "registration";
+        }
+    }
+
+    @RequestMapping(value = { "/home" }, method = RequestMethod.GET)
+    public String home(Model model) {
 
         if (authService.getCurrentUser() != null) {
             model.addAttribute("userForm", authService.getCurrentUser());
-            return "chooseTable";
+            return "home";
         } else {
             return "redirect:/";
         }
