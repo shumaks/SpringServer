@@ -8,6 +8,7 @@ import com.shumak.common.employees.Employee;
 import com.shumak.common.employees.EmployeeForm;
 import com.shumak.common.jdbc.QueryData;
 import com.shumak.common.mode.Mode;
+import com.shumak.common.mode.ModeForm;
 import com.shumak.common.sales.Sale;
 import com.shumak.common.sales.SaleForm;
 import com.shumak.common.service.ImageCodingService;
@@ -255,6 +256,78 @@ public class MainController {
         String error = "All fields are required!";
         model.addAttribute("errorMessage", error);
         return "addAuto";
+    }
+
+    @RequestMapping(value = { "/modeTable" }, method = RequestMethod.GET)
+    public String modeTable(Model model) throws SQLException, ClassNotFoundException {
+
+        List<Mode> list = QueryData.getDataFromDb("table_mode", tableMap.get("table_mode"), Mode.class);
+
+        model.addAttribute("modes", list);
+
+        return "modeTable";
+    }
+
+    @PostMapping("/modeTable/delete/{id}")
+    public String deleteMode(@PathVariable("id") Long id, Model model
+    ) throws SQLException, ClassNotFoundException {
+        QueryData.deleteDataFromDb("table_mode", id);
+        return "redirect:/modeTable";
+    }
+
+    @PostMapping("/modeTable/update/{id}")
+    public String goUpdateMode(@PathVariable("id") Long id, Model model
+    ) {
+        return "redirect:/updateMode/{id}";
+    }
+
+    @RequestMapping(value = { "/updateMode/{id}" }, method = RequestMethod.GET)
+    public String updateMode(@PathVariable("id") Long id, Model model) throws SQLException, ClassNotFoundException {
+
+        List<Mode> list = QueryData.getDataFromDb("table_mode", tableMap.get("table_mode"), Mode.class);
+        list.forEach(mode -> {
+            if (mode.getId() == id) {
+                model.addAttribute("modeForm", mode);
+            }
+        });
+
+        return "updateMode";
+    }
+
+    @RequestMapping(value = { "/updateMode/{id}" }, method = RequestMethod.POST)
+    public String updateModePost(@PathVariable("id") Long id, Model model, @ModelAttribute("modeForm") ModeForm modeForm
+    ) throws SQLException, ClassNotFoundException {
+
+        Mode mode = new Mode(id, modeForm.getName(), modeForm.getMaxSpeed(), modeForm.getAccelerationTime(), modeForm.getEngineVolume(), modeForm.getGasMileage(), modeForm.getPrice());
+
+        QueryData.updateDataInDb("table_mode", tableMap.get("table_mode"), mode);
+
+        return "redirect:/modeTable";
+    }
+
+
+    @RequestMapping(value = { "/addMode" }, method = RequestMethod.GET)
+    public String addModeForm(Model model) {
+
+        ModeForm modeForm = new ModeForm();
+        model.addAttribute("modeForm", modeForm);
+
+        return "addMode";
+    }
+
+    @RequestMapping(value = { "/addMode" }, method = RequestMethod.POST)
+    public String addModeSave(Model model, //
+                                @ModelAttribute("modeForm") ModeForm modeForm) throws SQLException, ClassNotFoundException {
+
+        String name = modeForm.getName();
+
+        if (name != null && name.length() > 0) {
+            QueryData.addDataToDb("table_mode", tableMap.get("table_mode"), modeForm);
+            return "redirect:/modeTable";
+        }
+        String error = "All fields are required!";
+        model.addAttribute("errorMessage", error);
+        return "addMode";
     }
 
     @RequestMapping(value = { "/employeesTable" }, method = RequestMethod.GET)

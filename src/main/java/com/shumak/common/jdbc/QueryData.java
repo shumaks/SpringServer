@@ -1,5 +1,6 @@
 package com.shumak.common.jdbc;
 
+import com.shumak.common.app.MainController;
 import com.shumak.common.auto.Auto;
 import com.shumak.common.auto.AutoForm;
 import com.shumak.common.clients.Client;
@@ -29,6 +30,31 @@ public class QueryData {
         Connection connection = ConnectionUtils.getConnection();
 
         Statement statement = connection.createStatement();
+
+        if (Objects.equals(table, "table_auto")) {
+            String sqlAuto = "Delete from table_sales where id_auto = " + id;
+            statement.executeUpdate(sqlAuto);
+        } else if (Objects.equals(table, "table_clients")) {
+            String sqlClient = "Delete from table_sales where id_client = " + id;
+            statement.executeUpdate(sqlClient);
+        } else if (Objects.equals(table, "table_employee")) {
+            String sqlEmp = "Delete from table_sales where id_emp = " + id;
+            statement.executeUpdate(sqlEmp);
+        } else if (Objects.equals(table, "table_mode")) {
+            List<Auto> autoList = QueryData.getDataFromDb("table_auto", MainController.tableMap.get("table_auto"), Auto.class);
+            autoList.forEach(auto -> {
+                if (auto.getMode().getId() == id) {
+                    String sqlAuto = "Delete from table_sales where id_auto = " + auto.getId();
+                    try {
+                        statement.executeUpdate(sqlAuto);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
+            String sqlMode = "Delete from table_auto where id_mode = " + id;
+            statement.executeUpdate(sqlMode);
+        }
 
         String sql = "Delete from " + table + " where id = " + id;
 

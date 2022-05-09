@@ -24,6 +24,9 @@
                 <a class="nav-link" href="autoTable">Auto</a>
             </li>
             <li class="nav-item">
+                <a class="nav-link" href="modeTable">Mode</a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" href="salesTable">Sales</a>
             </li>
         </ul>
