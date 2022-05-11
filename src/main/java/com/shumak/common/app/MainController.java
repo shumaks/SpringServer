@@ -2,6 +2,8 @@ package com.shumak.common.app;
 
 import com.shumak.common.auto.Auto;
 import com.shumak.common.auto.AutoForm;
+import com.shumak.common.auto.AutoImage;
+import com.shumak.common.auto.UploadForm;
 import com.shumak.common.clients.Client;
 import com.shumak.common.clients.ClientForm;
 import com.shumak.common.employees.Employee;
@@ -19,12 +21,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -51,7 +57,7 @@ public class MainController {
     @Value("${error.message}")
     private String errorMessage;
 
-    @RequestMapping(value = { "/", "/index" }, method = RequestMethod.GET)
+    @RequestMapping(value = {"/", "/index"}, method = RequestMethod.GET)
     public String index(Model model) {
         UserForm userForm = new UserForm();
         model.addAttribute("userForm", userForm);
@@ -60,9 +66,9 @@ public class MainController {
         return "index";
     }
 
-    @RequestMapping(value = { "/", "/index" }, method = RequestMethod.POST)
+    @RequestMapping(value = {"/", "/index"}, method = RequestMethod.POST)
     public String checkUser(Model model, //
-                                @ModelAttribute("userForm") UserForm userForm) throws SQLException, ClassNotFoundException {
+                            @ModelAttribute("userForm") UserForm userForm) throws SQLException, ClassNotFoundException {
         String login = userForm.getLogin();
         String password = userForm.getPassword();
         List<User> list = QueryData.getDataFromDb("table_users", tableMap.get("table_users"), User.class);
@@ -85,7 +91,7 @@ public class MainController {
         }
     }
 
-    @RequestMapping(value = { "/registration" }, method = RequestMethod.GET)
+    @RequestMapping(value = {"/registration"}, method = RequestMethod.GET)
     public String registration(Model model) {
         UserForm userForm = new UserForm();
         model.addAttribute("userForm", userForm);
@@ -97,9 +103,9 @@ public class MainController {
         }
     }
 
-    @RequestMapping(value = { "/registration" }, method = RequestMethod.POST)
+    @RequestMapping(value = {"/registration"}, method = RequestMethod.POST)
     public String userRegistration(Model model, //
-                            @ModelAttribute("userForm") UserForm userForm) throws SQLException, ClassNotFoundException {
+                                   @ModelAttribute("userForm") UserForm userForm) throws SQLException, ClassNotFoundException {
         String login = userForm.getLogin();
         String password = userForm.getPassword();
         List<User> list = QueryData.getDataFromDb("table_users", tableMap.get("table_users"), User.class);
@@ -124,7 +130,7 @@ public class MainController {
         }
     }
 
-    @RequestMapping(value = { "/home" }, method = RequestMethod.GET)
+    @RequestMapping(value = {"/home"}, method = RequestMethod.GET)
     public String home(Model model) {
 
         if (authService.getCurrentUser() != null) {
@@ -135,7 +141,7 @@ public class MainController {
         }
     }
 
-    @RequestMapping(value = { "/clientsTable" }, method = RequestMethod.GET)
+    @RequestMapping(value = {"/clientsTable"}, method = RequestMethod.GET)
     public String clientsTable(Model model) throws SQLException, ClassNotFoundException {
 
         List<Client> list = QueryData.getDataFromDb("table_clients", tableMap.get("table_clients"), Client.class);
@@ -163,7 +169,7 @@ public class MainController {
         return "redirect:/updateClient/{id}";
     }
 
-    @RequestMapping(value = { "/updateClient/{id}" }, method = RequestMethod.GET)
+    @RequestMapping(value = {"/updateClient/{id}"}, method = RequestMethod.GET)
     public String updateClient(@PathVariable("id") Long id, Model model) throws SQLException, ClassNotFoundException {
 
         List<Client> list = QueryData.getDataFromDb("table_clients", tableMap.get("table_clients"), Client.class);
@@ -179,7 +185,7 @@ public class MainController {
         }
     }
 
-    @RequestMapping(value = { "/updateClient/{id}" }, method = RequestMethod.POST)
+    @RequestMapping(value = {"/updateClient/{id}"}, method = RequestMethod.POST)
     public String updateClientPost(@PathVariable("id") Long id, Model model, @ModelAttribute("clientForm") ClientForm clientForm
     ) throws SQLException, ClassNotFoundException {
 
@@ -191,7 +197,7 @@ public class MainController {
     }
 
 
-    @RequestMapping(value = { "/addClient" }, method = RequestMethod.GET)
+    @RequestMapping(value = {"/addClient"}, method = RequestMethod.GET)
     public String addClientForm(Model model) {
 
         ClientForm clientForm = new ClientForm();
@@ -204,7 +210,7 @@ public class MainController {
         }
     }
 
-    @RequestMapping(value = { "/addClient" }, method = RequestMethod.POST)
+    @RequestMapping(value = {"/addClient"}, method = RequestMethod.POST)
     public String addClientSave(Model model, //
                                 @ModelAttribute("clientForm") ClientForm clientForm) throws SQLException, ClassNotFoundException {
 
@@ -231,12 +237,25 @@ public class MainController {
         }
     }
 
-    @RequestMapping(value = { "/autoTable" }, method = RequestMethod.GET)
-    public String autoTable(Model model) throws SQLException, ClassNotFoundException {
+    @RequestMapping(value = {"/autoTable"}, method = RequestMethod.GET)
+    public String autoTable(Model model, HttpServletRequest request) throws SQLException, ClassNotFoundException {
 
         List<Auto> list = QueryData.getDataFromDb("table_auto", tableMap.get("table_auto"), Auto.class);
 
         model.addAttribute("autos", list);
+        ArrayList<AutoImage> imagePaths = new ArrayList<>();
+        list.forEach(auto -> {
+            AutoImage autoImage = new AutoImage();
+            autoImage.setId(auto.getId());
+            String image = auto.getImage();
+            if (!Objects.equals(image, "null")) {
+                autoImage.setPath("data:image/png;base64," + auto.getImage());
+            } else {
+                autoImage.setPath("");
+            }
+            imagePaths.add(autoImage);
+        });
+        model.addAttribute("images", imagePaths);
 
         if (authService.getCurrentUser() != null) {
             model.addAttribute("userForm", authService.getCurrentUser());
@@ -259,8 +278,10 @@ public class MainController {
         return "redirect:/updateAuto/{id}";
     }
 
-    @RequestMapping(value = { "/updateAuto/{id}" }, method = RequestMethod.GET)
+    @RequestMapping(value = {"/updateAuto/{id}"}, method = RequestMethod.GET)
     public String updateAuto(@PathVariable("id") Long id, Model model) throws SQLException, ClassNotFoundException {
+        UploadForm uploadForm = new UploadForm();
+        model.addAttribute("uploadForm", uploadForm);
 
         List<Auto> list = QueryData.getDataFromDb("table_auto", tableMap.get("table_auto"), Auto.class);
         list.forEach(auto -> {
@@ -282,9 +303,9 @@ public class MainController {
         }
     }
 
-    @RequestMapping(value = { "/updateAuto/{id}" }, method = RequestMethod.POST)
-    public String updateAutoPost(@PathVariable("id") Long id, Model model, @ModelAttribute("autoForm") AutoForm autoForm, @ModelAttribute("selectedMode") Long modeId
-    ) throws SQLException, ClassNotFoundException {
+    @RequestMapping(value = {"/updateAuto/{id}"}, method = RequestMethod.POST)
+    public String updateAutoPost(@PathVariable("id") Long id, Model model, @ModelAttribute("autoForm") AutoForm autoForm, @ModelAttribute("uploadForm") UploadForm uploadForm, HttpServletRequest request, @ModelAttribute("selectedMode") Long modeId
+    ) throws Exception {
         List<Mode> listMode = QueryData.getDataFromDb("table_mode", tableMap.get("table_mode"), Mode.class);
         listMode.forEach(mode -> {
             if (mode.getId() == modeId) {
@@ -292,18 +313,33 @@ public class MainController {
             }
         });
 
-        Auto auto = new Auto(id, autoForm.getModel(), autoForm.getSits(), autoForm.getModelYear(), autoForm.getImage(), autoForm.getMode());
+        List<Auto> listAuto = QueryData.getDataFromDb("table_auto", tableMap.get("table_auto"), Auto.class);
+        listAuto.forEach(auto -> {
+            if (auto.getId() == id) {
+                autoForm.setImage(auto.getImage());
+            }
+        });
+
+        String image = autoForm.getImage();
+
+        if (!uploadForm.getFileData().getOriginalFilename().isEmpty()) {
+            image = ImageCodingService.encodeFileToBase64Binary(uploadFile(uploadForm, request));
+        }
+        Auto auto = new Auto(id, autoForm.getModel(), autoForm.getSits(), autoForm.getModelYear(), image, autoForm.getMode());
 
         QueryData.updateDataInDb("table_auto", tableMap.get("table_auto"), auto);
 
         return "redirect:/autoTable";
     }
 
-    @RequestMapping(value = { "/addAuto" }, method = RequestMethod.GET)
+    @RequestMapping(value = {"/addAuto"}, method = RequestMethod.GET)
     public String addAutoForm(Model model) throws SQLException, ClassNotFoundException {
 
         AutoForm autoForm = new AutoForm();
         model.addAttribute("autoForm", autoForm);
+
+        UploadForm uploadForm = new UploadForm();
+        model.addAttribute("uploadForm", uploadForm);
 
         List<Mode> listMode = QueryData.getDataFromDb("table_mode", tableMap.get("table_mode"), Mode.class);
         model.addAttribute("mode", listMode);
@@ -315,10 +351,14 @@ public class MainController {
         }
     }
 
-    @RequestMapping(value = { "/addAuto" }, method = RequestMethod.POST)
-    public String addAuto(Model model, @ModelAttribute("autoForm") AutoForm autoForm,
-                          @ModelAttribute("selectedMode") Long modeId
-    ) throws SQLException, ClassNotFoundException {
+    @RequestMapping(value = {"/addAuto"}, method = RequestMethod.POST)
+    public String addAuto(
+            Model model,
+            @ModelAttribute("autoForm") AutoForm autoForm,
+            @ModelAttribute("uploadForm") UploadForm uploadForm,
+            @ModelAttribute("selectedMode") Long modeId,
+            HttpServletRequest request
+    ) throws Exception {
         String modelAuto = autoForm.getModel();
         List<Mode> listMode = QueryData.getDataFromDb("table_mode", tableMap.get("table_mode"), Mode.class);
         listMode.forEach(mode -> {
@@ -327,6 +367,9 @@ public class MainController {
             }
         });
 
+        if (!Objects.requireNonNull(uploadForm.getFileData().getOriginalFilename()).isEmpty()) {
+            autoForm.setImage(ImageCodingService.encodeFileToBase64Binary(uploadFile(uploadForm, request)));
+        }
         if (modelAuto != null && modelAuto.length() > 0) {
             QueryData.addDataToDb("table_auto", tableMap.get("table_auto"), autoForm);
             return "redirect:/autoTable";
@@ -341,7 +384,23 @@ public class MainController {
         }
     }
 
-    @RequestMapping(value = { "/modeTable" }, method = RequestMethod.GET)
+    private File uploadFile(UploadForm uploadForm, HttpServletRequest request) throws IOException {
+        String uploadRootPath = request.getServletContext().getRealPath("upload");
+        File uploadRootDir = new File(uploadRootPath);
+        if (!uploadRootDir.exists()) {
+            uploadRootDir.mkdirs();
+        }
+        MultipartFile fileData = uploadForm.getFileData();
+        String name = fileData.getOriginalFilename();
+        File serverFile = new File(uploadRootDir.getAbsolutePath() + File.separator + name);
+
+        BufferedOutputStream stream = new BufferedOutputStream(Files.newOutputStream(serverFile.toPath()));
+        stream.write(fileData.getBytes());
+        stream.close();
+        return serverFile;
+    }
+
+    @RequestMapping(value = {"/modeTable"}, method = RequestMethod.GET)
     public String modeTable(Model model) throws SQLException, ClassNotFoundException {
 
         List<Mode> list = QueryData.getDataFromDb("table_mode", tableMap.get("table_mode"), Mode.class);
@@ -369,7 +428,7 @@ public class MainController {
         return "redirect:/updateMode/{id}";
     }
 
-    @RequestMapping(value = { "/updateMode/{id}" }, method = RequestMethod.GET)
+    @RequestMapping(value = {"/updateMode/{id}"}, method = RequestMethod.GET)
     public String updateMode(@PathVariable("id") Long id, Model model) throws SQLException, ClassNotFoundException {
 
         List<Mode> list = QueryData.getDataFromDb("table_mode", tableMap.get("table_mode"), Mode.class);
@@ -386,7 +445,7 @@ public class MainController {
         }
     }
 
-    @RequestMapping(value = { "/updateMode/{id}" }, method = RequestMethod.POST)
+    @RequestMapping(value = {"/updateMode/{id}"}, method = RequestMethod.POST)
     public String updateModePost(@PathVariable("id") Long id, Model model, @ModelAttribute("modeForm") ModeForm modeForm
     ) throws SQLException, ClassNotFoundException {
 
@@ -398,7 +457,7 @@ public class MainController {
     }
 
 
-    @RequestMapping(value = { "/addMode" }, method = RequestMethod.GET)
+    @RequestMapping(value = {"/addMode"}, method = RequestMethod.GET)
     public String addModeForm(Model model) {
 
         ModeForm modeForm = new ModeForm();
@@ -411,9 +470,9 @@ public class MainController {
         }
     }
 
-    @RequestMapping(value = { "/addMode" }, method = RequestMethod.POST)
+    @RequestMapping(value = {"/addMode"}, method = RequestMethod.POST)
     public String addModeSave(Model model, //
-                                @ModelAttribute("modeForm") ModeForm modeForm) throws SQLException, ClassNotFoundException {
+                              @ModelAttribute("modeForm") ModeForm modeForm) throws SQLException, ClassNotFoundException {
 
         String name = modeForm.getName();
 
@@ -431,14 +490,14 @@ public class MainController {
         }
     }
 
-    @RequestMapping(value = { "/employeesTable" }, method = RequestMethod.GET)
+    @RequestMapping(value = {"/employeesTable"}, method = RequestMethod.GET)
     public String employeesTable(Model model) throws SQLException, ClassNotFoundException {
 
         List<Employee> list = QueryData.getDataFromDb("table_employee", tableMap.get("table_employee"), Employee.class);
 
         model.addAttribute("employees", list);
 
-        if ( Objects.equals(authService.getCurrentUser().getAccessRights(), "director")) {
+        if (Objects.equals(authService.getCurrentUser().getAccessRights(), "director")) {
             return "employeesTable";
         } else {
             return "redirect:/";
@@ -458,7 +517,7 @@ public class MainController {
         return "redirect:/updateEmployee/{id}";
     }
 
-    @RequestMapping(value = { "/updateEmployee/{id}" }, method = RequestMethod.GET)
+    @RequestMapping(value = {"/updateEmployee/{id}"}, method = RequestMethod.GET)
     public String updateEmployee(@PathVariable("id") Long id, Model model) throws SQLException, ClassNotFoundException {
 
         List<Employee> list = QueryData.getDataFromDb("table_employee", tableMap.get("table_employee"), Employee.class);
@@ -475,7 +534,7 @@ public class MainController {
         }
     }
 
-    @RequestMapping(value = { "/updateEmployee/{id}" }, method = RequestMethod.POST)
+    @RequestMapping(value = {"/updateEmployee/{id}"}, method = RequestMethod.POST)
     public String updateEmployeePost(@PathVariable("id") Long id, Model model, @ModelAttribute("employeeForm") EmployeeForm employeeForm
     ) throws SQLException, ClassNotFoundException {
 
@@ -487,7 +546,7 @@ public class MainController {
     }
 
 
-    @RequestMapping(value = { "/addEmployee" }, method = RequestMethod.GET)
+    @RequestMapping(value = {"/addEmployee"}, method = RequestMethod.GET)
     public String addEmployeeForm(Model model) {
 
         EmployeeForm employeeForm = new EmployeeForm();
@@ -500,9 +559,9 @@ public class MainController {
         }
     }
 
-    @RequestMapping(value = { "/addEmployee" }, method = RequestMethod.POST)
+    @RequestMapping(value = {"/addEmployee"}, method = RequestMethod.POST)
     public String addEmployeeSave(Model model, //
-                                @ModelAttribute("employeeForm") EmployeeForm employeeForm) throws SQLException, ClassNotFoundException {
+                                  @ModelAttribute("employeeForm") EmployeeForm employeeForm) throws SQLException, ClassNotFoundException {
 
         String surname = employeeForm.getSurname();
         String name = employeeForm.getName();
@@ -531,7 +590,7 @@ public class MainController {
         }
     }
 
-    @RequestMapping(value = { "/salesTable" }, method = RequestMethod.GET)
+    @RequestMapping(value = {"/salesTable"}, method = RequestMethod.GET)
     public String salesTable(Model model) throws SQLException, ClassNotFoundException {
         List<Sale> list = QueryData.getDataFromDb("table_sales", tableMap.get("table_sales"), Sale.class);
 
@@ -558,7 +617,7 @@ public class MainController {
         return "redirect:/updateSale/{id}";
     }
 
-    @RequestMapping(value = { "/updateSale/{id}" }, method = RequestMethod.GET)
+    @RequestMapping(value = {"/updateSale/{id}"}, method = RequestMethod.GET)
     public String updateSale(@PathVariable("id") Long id, Model model) throws SQLException, ClassNotFoundException {
 
         List<Sale> list = QueryData.getDataFromDb("table_sales", tableMap.get("table_sales"), Sale.class);
@@ -586,7 +645,7 @@ public class MainController {
         }
     }
 
-    @RequestMapping(value = { "/updateSale/{id}" }, method = RequestMethod.POST)
+    @RequestMapping(value = {"/updateSale/{id}"}, method = RequestMethod.POST)
     public String updateSalePost(
             @PathVariable("id") Long id,
             Model model,
@@ -623,7 +682,7 @@ public class MainController {
         return "redirect:/salesTable";
     }
 
-    @RequestMapping(value = { "/addSale" }, method = RequestMethod.GET)
+    @RequestMapping(value = {"/addSale"}, method = RequestMethod.GET)
     public String addSaleForm(Model model) throws SQLException, ClassNotFoundException {
 
         SaleForm saleForm = new SaleForm();
@@ -644,7 +703,7 @@ public class MainController {
         }
     }
 
-    @RequestMapping(value = { "/addSale" }, method = RequestMethod.POST)
+    @RequestMapping(value = {"/addSale"}, method = RequestMethod.POST)
     public String addSale(
             Model model,
             @ModelAttribute("saleForm") SaleForm saleForm,

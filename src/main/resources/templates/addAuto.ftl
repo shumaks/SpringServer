@@ -15,7 +15,8 @@
 <div>
     <fieldset>
         <legend>Добавление автомобиля</legend>
-        <form name="auto" action="" method="POST">
+        <form name="auto" action="" method="POST" enctype="multipart/form-data">
+            Изображение: <@spring.formInput "uploadForm.fileData" "" "file"/>    <br/>
             Модель: <@spring.formInput "autoForm.model" "" "text"/>    <br/>
             Количество мест: <@spring.formInput "autoForm.sits" "" "text"/>    <br/>
             Год выпуска: <@spring.formInput "autoForm.modelYear" "" "text"/>    <br/>

@@ -3,12 +3,20 @@
 <html>
 <head>
     <title>Автомобили</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <style>
+        figure img {
+            width: 50%;
+            height: 50%;
+        }
+    </style>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="home">Главная</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
 
@@ -41,6 +49,7 @@
     <table class="table">
         <thead class="thead-light">
         <tr>
+            <th>Изображение</th>
             <th>Модель</th>
             <th>Количество мест</th>
             <th>Год выпуска</th>
@@ -55,6 +64,15 @@
         <tbody>
         <#list autos as auto>
             <tr>
+                <td>
+                    <#list images as image>
+                        <#if image.id == auto.id>
+                            <figure>
+                                <img src="${image.path}" alt="-"/>
+                            </figure>
+                        </#if>
+                    </#list>
+                </td>
                 <td>${auto.model}</td>
                 <td>${auto.sits}</td>
                 <td>${auto.modelYear}</td>
@@ -66,12 +84,12 @@
                 <td>${auto.mode.price}</td>
                 <td>
                     <form action="/autoTable/delete/${auto.id}" method="post">
-                        <input class="btn btn-secondary" type="submit" value="Delete">
+                        <input class="btn btn-secondary" type="submit" value="Удалить">
                     </form>
                 </td>
                 <td>
                     <form action="/autoTable/update/${auto.id}" method="post">
-                        <input class="btn btn-secondary" type="submit" value="Update">
+                        <input class="btn btn-secondary" type="submit" value="Редактировать">
                     </form>
                 </td>
             </tr>
@@ -79,6 +97,6 @@
         </tbody>
     </table>
 </div>
-<a href="addAuto" class="btn btn-secondary">Add auto</a>
+<a href="addAuto" class="btn btn-secondary">Добавить</a>
 </body>
 </html>
