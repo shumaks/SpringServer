@@ -45,6 +45,8 @@ public class MainController {
     public static HashMap<String, List<String>> tableMap = new HashMap<>();
     public static AuthService authService = new AuthService();
 
+    public static Boolean isThemeLight = true;
+
     static {
         tableMap.put("table_auto", List.of("id", "model", "sits", "year", "image", "id_mode"));
         tableMap.put("table_clients", List.of("id", "surname", "name", "patr", "phone"));
@@ -133,12 +135,22 @@ public class MainController {
         }
     }
 
+    @PostMapping({"/changeThemeColor/{page}"})
+    public String changeThemeColor(@PathVariable("page") String page) {
+        isThemeLight = !isThemeLight;
+        return "redirect:/" + page;
+    }
+
     @RequestMapping(value = {"/home"}, method = RequestMethod.GET)
     public String home(Model model) {
 
         if (authService.getCurrentUser() != null) {
             model.addAttribute("userForm", authService.getCurrentUser());
-            return "home";
+            if (isThemeLight) {
+                return "home";
+            } else {
+                return "homeDark";
+            }
         } else {
             return "redirect:/";
         }
@@ -153,7 +165,11 @@ public class MainController {
 
         if (authService.getCurrentUser() != null) {
             model.addAttribute("userForm", authService.getCurrentUser());
-            return "clientsTable";
+            if (isThemeLight) {
+                return "clientsTable";
+            } else {
+                return "clientsTableDark";
+            }
         } else {
             return "redirect:/";
         }
@@ -182,7 +198,11 @@ public class MainController {
             }
         });
         if (authService.getCurrentUser() != null) {
-            return "updateClient";
+            if (isThemeLight) {
+                return "updateClient";
+            } else {
+                return "updateClientDark";
+            }
         } else {
             return "redirect:/";
         }
@@ -207,7 +227,11 @@ public class MainController {
         model.addAttribute("clientForm", clientForm);
 
         if (authService.getCurrentUser() != null) {
-            return "addClient";
+            if (isThemeLight) {
+                return "addClient";
+            } else {
+                return "addClientDark";
+            }
         } else {
             return "redirect:/";
         }
@@ -262,7 +286,11 @@ public class MainController {
 
         if (authService.getCurrentUser() != null) {
             model.addAttribute("userForm", authService.getCurrentUser());
-            return "autoTable";
+            if (isThemeLight) {
+                return "autoTable";
+            } else {
+                return "autoTableDark";
+            }
         } else {
             return "redirect:/";
         }
@@ -300,7 +328,11 @@ public class MainController {
         });
 
         if (authService.getCurrentUser() != null) {
-            return "updateAuto";
+            if (isThemeLight) {
+                return "updateAuto";
+            } else {
+                return "updateAutoDark";
+            }
         } else {
             return "redirect:/";
         }
@@ -348,7 +380,11 @@ public class MainController {
         model.addAttribute("mode", listMode);
 
         if (authService.getCurrentUser() != null) {
-            return "addAuto";
+            if(isThemeLight) {
+                return "addAuto";
+            } else {
+                return "addAutoDark";
+            }
         } else {
             return "redirect:/";
         }
@@ -412,7 +448,11 @@ public class MainController {
 
         if (authService.getCurrentUser() != null) {
             model.addAttribute("userForm", authService.getCurrentUser());
-            return "modeTable";
+            if (isThemeLight) {
+                return "modeTable";
+            } else {
+                return "modeTableDark";
+            }
         } else {
             return "redirect:/";
         }
@@ -442,7 +482,11 @@ public class MainController {
         });
 
         if (authService.getCurrentUser() != null) {
-            return "updateMode";
+            if (isThemeLight) {
+                return "updateMode";
+            } else {
+                return "updateModeDark";
+            }
         } else {
             return "redirect:/";
         }
@@ -467,7 +511,11 @@ public class MainController {
         model.addAttribute("modeForm", modeForm);
 
         if (authService.getCurrentUser() != null) {
-            return "addMode";
+            if (isThemeLight) {
+                return "addMode";
+            } else {
+                return "addModeDark";
+            }
         } else {
             return "redirect:/";
         }
@@ -501,7 +549,11 @@ public class MainController {
         model.addAttribute("employees", list);
 
         if (Objects.equals(authService.getCurrentUser().getAccessRights(), "director")) {
-            return "employeesTable";
+            if (isThemeLight) {
+                return "employeesTable";
+            } else {
+                return "employeesTableDark";
+            }
         } else {
             return "redirect:/";
         }
@@ -531,7 +583,11 @@ public class MainController {
         });
 
         if (Objects.equals(authService.getCurrentUser().getAccessRights(), "director")) {
-            return "updateEmployee";
+            if (isThemeLight) {
+                return "updateEmployee";
+            } else {
+                return "updateEmployeeDark";
+            }
         } else {
             return "redirect:/";
         }
@@ -556,7 +612,11 @@ public class MainController {
         model.addAttribute("employeeForm", employeeForm);
 
         if (Objects.equals(authService.getCurrentUser().getAccessRights(), "director")) {
-            return "addEmployee";
+            if (isThemeLight) {
+                return "addEmployee";
+            } else {
+                return "addEmployeeDark";
+            }
         } else {
             return "redirect:/";
         }
@@ -601,7 +661,11 @@ public class MainController {
 
         if (authService.getCurrentUser() != null) {
             model.addAttribute("userForm", authService.getCurrentUser());
-            return "salesTable";
+            if (isThemeLight) {
+                return "salesTable";
+            } else {
+                return "salesTableDark";
+            }
         } else {
             return "redirect:/";
         }
@@ -642,7 +706,11 @@ public class MainController {
             }
         });
         if (authService.getCurrentUser() != null) {
-            return "updateSale";
+            if (isThemeLight) {
+                return "updateSale";
+            } else {
+                return "updateSaleDark";
+            }
         } else {
             return "redirect:/";
         }
@@ -700,7 +768,11 @@ public class MainController {
         model.addAttribute("autos", listAuto);
 
         if (authService.getCurrentUser() != null) {
-            return "addSale";
+            if (isThemeLight) {
+                return "addSale";
+            } else {
+                return "addSaleDark";
+            }
         } else {
             return "redirect:/";
         }

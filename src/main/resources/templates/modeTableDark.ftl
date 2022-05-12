@@ -2,11 +2,11 @@
 
 <html>
 <head>
-    <title>Клиенты</title>
+    <title>Mode Table</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 </head>
-<body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<body style="background-color:grey;">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <a class="navbar-brand" href="home">Главная</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -35,7 +35,7 @@
                 <a class="btn btn-primary" href="/">Выйти</a>
             </li>
             <li class="nav-item">
-                <form action="/changeThemeColor/clientsTable" method="post">
+                <form action="/changeThemeColor/modeTable" method="post">
                     <input class="btn btn-primary" style="margin-left:10px;" type="submit" name="button1" value="Сменить цветовую тему" />
                 </form>
             </li>
@@ -43,7 +43,7 @@
     </div>
 </nav>
 <div>
-    <input type="text" id="input" onkeyup="search()" placeholder="Поиск по фамилии" size="215">
+    <input type="text" id="input" onkeyup="search()" placeholder="Поиск по названию" size="215">
     <script>
         function search() {
             var input, filter, table, tr, td, i, txtValue;
@@ -68,26 +68,30 @@
     <table class="table" id="table">
         <thead class="thead-light">
         <tr>
-            <th scope="col">Фамилия</th>
-            <th scope="col">Имя</th>
-            <th scope="col">Отчество</th>
-            <th scope="col">Номер телефона</th>
+            <th scope="col">Название</th>
+            <th scope="col">Максимальная скорость, км/ч</th>
+            <th scope="col">Разгон до 100 км/ч, сек</th>
+            <th scope="col">Объем двигателя, л</th>
+            <th scope="col">Расход топлива, литров на 100 км</th>
+            <th scope="col">Цена, руб.</th>
         </tr>
         </thead>
         <tbody>
-        <#list clients as client>
+        <#list modes as mode>
             <tr>
-                <td>${client.surname}</td>
-                <td>${client.name}</td>
-                <td>${client.patr}</td>
-                <td>${client.phone}</td>
+                <td>${mode.name}</td>
+                <td>${mode.maxSpeed}</td>
+                <td>${mode.accelerationTime}</td>
+                <td>${mode.engineVolume}</td>
+                <td>${mode.gasMileage}</td>
+                <td>${mode.price}</td>
                 <td>
-                    <form action="/clientsTable/delete/${client.id}" method="post">
+                    <form action="/modeTable/delete/${mode.id}" method="post">
                         <input class="btn btn-secondary" type="submit" value="Удалить">
                     </form>
                 </td>
                 <td>
-                    <form action="/clientsTable/update/${client.id}" method="post">
+                    <form action="/modeTable/update/${mode.id}" method="post">
                         <input class="btn btn-secondary" type="submit" value="Редактировать">
                     </form>
                 </td>
@@ -96,6 +100,6 @@
         </tbody>
     </table>
 </div>
-<a type="button" class="btn btn-secondary" href="addClient">Добавить</a>
+<a type="button" class="btn btn-secondary" href="addMode">Добавить</a>
 </body>
 </html>

@@ -32,11 +32,16 @@
             <li class="nav-item">
                 <a class="btn btn-primary" href="/">Выйти</a>
             </li>
+            <li class="nav-item">
+                <form action="/changeThemeColor/employeesTable" method="post">
+                    <input class="btn btn-primary" style="margin-left:10px;" type="submit" name="button1" value="Сменить цветовую тему" />
+                </form>
+            </li>
         </ul>
     </div>
 </nav>
 <div>
-    <input type="text" id="input" onkeyup="search()" placeholder="Поиск по фамилии" size="230">
+    <input type="text" id="input" onkeyup="search()" placeholder="Поиск по фамилии" size="215">
     <script>
         function search() {
             var input, filter, table, tr, td, i, txtValue;
