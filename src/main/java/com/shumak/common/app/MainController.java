@@ -14,9 +14,11 @@ import com.shumak.common.mode.ModeForm;
 import com.shumak.common.sales.Sale;
 import com.shumak.common.sales.SaleForm;
 import com.shumak.common.service.AuthService;
+import com.shumak.common.service.FileService;
 import com.shumak.common.service.ImageCodingService;
 import com.shumak.common.users.User;
 import com.shumak.common.users.UserForm;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +28,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.*;
 import java.nio.file.Files;
@@ -740,5 +743,24 @@ public class MainController {
         QueryData.addDataToDb("table_sales", tableMap.get("table_sales"), saleForm);
 
         return "redirect:/salesTable";
+    }
+
+    @RequestMapping(value = {"/salesTable/createPdf/{id}"}, method = RequestMethod.GET)
+    public void createPdf(@PathVariable("id") Long id, Model model, HttpServletResponse response, HttpServletRequest request) throws SQLException, ClassNotFoundException {
+
+        List<Sale> list = QueryData.getDataFromDb("table_sales", tableMap.get("table_sales"), Sale.class);
+        list.forEach(sale -> {
+            if (sale.getId() == id) {
+                try {
+                    InputStream is = Files.newInputStream(FileService.createPdf(sale, request).toPath());
+                    IOUtils.copy(is, response.getOutputStream());
+                    response.setContentType("application/pdf");
+                    response.flushBuffer();
+                } catch (IOException ex) {
+                    throw new RuntimeException("IOError writing file to output stream");
+                }
+            }
+        });
+
     }
 }

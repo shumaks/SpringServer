@@ -64,6 +64,11 @@
                         <input class="btn btn-secondary" type="submit" value="Редактировать">
                     </form>
                 </td>
+                <td>
+                    <form action="/salesTable/createPdf/${sale.id}" method="get">
+                        <input class="btn btn-secondary" type="submit" value="Сохранить в PDF">
+                    </form>
+                </td>
             </tr>
         </#list>
         </tbody>
