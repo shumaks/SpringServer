@@ -5,7 +5,7 @@
     <title>Работники</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 </head>
-<body style="background-color:grey;">
+<body class="bg-dark">
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <a class="navbar-brand" href="home">Главная</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,7 +63,7 @@
             }
         }
     </script>
-    <table class="table" id="table">
+    <table class="table table-dark" id="table">
         <thead class="thead-light">
         <tr>
             <th>Фамилия</th>
@@ -85,12 +85,12 @@
                 <td>${employee.phone}</td>
                 <td>
                     <form action="/employeesTable/delete/${employee.id}" method="post">
-                        <input class="btn btn-secondary" type="submit" value="Удалить">
+                        <input class="btn btn-light" type="submit" value="Удалить">
                     </form>
                 </td>
                 <td>
                     <form action="/employeesTable/update/${employee.id}" method="post">
-                        <input class="btn btn-secondary" type="submit" value="Редактировать">
+                        <input class="btn btn-light" type="submit" value="Редактировать">
                     </form>
                 </td>
             </tr>
@@ -98,6 +98,6 @@
         </tbody>
     </table>
 </div>
-<a href="addEmployee" class="btn btn-secondary">Добавить</a>
+<a href="addEmployee" class="btn btn-light">Добавить</a>
 </body>
 </html>

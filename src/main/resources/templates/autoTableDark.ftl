@@ -12,7 +12,7 @@
         }
     </style>
 </head>
-<body style="background-color:grey;">
+<body class="bg-dark">
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <a class="navbar-brand" href="home">Главная</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -73,7 +73,7 @@
             }
         }
     </script>
-    <table class="table" id="table">
+    <table class="table table-dark" id="table">
         <thead class="thead-light">
         <tr>
             <th>Изображение</th>
@@ -111,12 +111,12 @@
                 <td>${auto.mode.price}</td>
                 <td>
                     <form action="/autoTable/delete/${auto.id}" method="post">
-                        <input class="btn btn-secondary" type="submit" value="Удалить">
+                        <input class="btn btn-light" type="submit" value="Удалить">
                     </form>
                 </td>
                 <td>
                     <form action="/autoTable/update/${auto.id}" method="post">
-                        <input class="btn btn-secondary" type="submit" value="Редактировать">
+                        <input class="btn btn-light" type="submit" value="Редактировать">
                     </form>
                 </td>
             </tr>
@@ -124,6 +124,6 @@
         </tbody>
     </table>
 </div>
-<a href="addAuto" class="btn btn-secondary">Добавить</a>
+<a href="addAuto" class="btn btn-light">Добавить</a>
 </body>
 </html>

@@ -68,6 +68,8 @@ public class MainController {
         model.addAttribute("userForm", userForm);
 
         authService.setCurrentUser(null);
+        isThemeLight = true;
+
         return "index";
     }
 
