@@ -38,13 +38,15 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Controller
 public class MainController {
 
     public static HashMap<String, List<String>> tableMap = new HashMap<>();
     public static AuthService authService = new AuthService();
-
+    Logger logger = Logger.getLogger(MainController.class.getName());
     public static Boolean isThemeLight = true;
 
     static {
@@ -76,6 +78,8 @@ public class MainController {
     @RequestMapping(value = {"/", "/index"}, method = RequestMethod.POST)
     public String checkUser(Model model, //
                             @ModelAttribute("userForm") UserForm userForm) throws SQLException, ClassNotFoundException {
+
+        logger.log(Level.INFO, "Момент времени завершения ввода команды");
         String login = userForm.getLogin();
         String password = userForm.getPassword();
         List<User> list = QueryData.getDataFromDb("table_users", tableMap.get("table_users"), User.class);
@@ -88,7 +92,7 @@ public class MainController {
                 returnedValue.set("redirect:/home");
             }
         });
-
+        logger.log(Level.INFO, "Момент времени получения результата");
         if (Objects.equals(returnedValue.get(), "redirect:/home")) {
             return "redirect:/home";
         } else {
@@ -113,6 +117,7 @@ public class MainController {
     @RequestMapping(value = {"/registration"}, method = RequestMethod.POST)
     public String userRegistration(Model model, //
                                    @ModelAttribute("userForm") UserForm userForm) throws SQLException, ClassNotFoundException {
+        logger.log(Level.INFO, "Момент времени завершения ввода команды");
         String login = userForm.getLogin();
         String password = userForm.getPassword();
         List<User> list = QueryData.getDataFromDb("table_users", tableMap.get("table_users"), User.class);
@@ -129,6 +134,7 @@ public class MainController {
             User user = new User(0, login, password, "manager");
             authService.setCurrentUser(user);
             QueryData.addDataToDb("table_users", MainController.tableMap.get("table_users"), userForm);
+            logger.log(Level.INFO, "Момент времени получения результата");
             return "redirect:/home";
         } else {
             String error = "Пользователь с таким логином уже существует!";
@@ -160,11 +166,12 @@ public class MainController {
 
     @RequestMapping(value = {"/clientsTable"}, method = RequestMethod.GET)
     public String clientsTable(Model model) throws SQLException, ClassNotFoundException {
+        logger.log(Level.INFO, "Момент времени завершения ввода команды");
 
         List<Client> list = QueryData.getDataFromDb("table_clients", tableMap.get("table_clients"), Client.class);
 
         model.addAttribute("clients", list);
-
+        logger.log(Level.INFO, "Момент времени получения результата");
         if (authService.getCurrentUser() != null) {
             model.addAttribute("userForm", authService.getCurrentUser());
             if (isThemeLight) {
@@ -180,7 +187,9 @@ public class MainController {
     @PostMapping("/clientsTable/delete/{id}")
     public String deleteClient(@PathVariable("id") Long id, Model model
     ) throws SQLException, ClassNotFoundException {
+        logger.log(Level.INFO, "Момент времени завершения ввода команды");
         QueryData.deleteDataFromDb("table_clients", id);
+        logger.log(Level.INFO, "Момент времени получения результата");
         return "redirect:/clientsTable";
     }
 
@@ -213,11 +222,12 @@ public class MainController {
     @RequestMapping(value = {"/updateClient/{id}"}, method = RequestMethod.POST)
     public String updateClientPost(@PathVariable("id") Long id, Model model, @ModelAttribute("clientForm") ClientForm clientForm
     ) throws SQLException, ClassNotFoundException {
+        logger.log(Level.INFO, "Момент времени завершения ввода команды");
 
         Client client = new Client(id, clientForm.getSurname(), clientForm.getName(), clientForm.getPatr(), clientForm.getPhone());
 
         QueryData.updateDataInDb("table_clients", tableMap.get("table_clients"), client);
-
+        logger.log(Level.INFO, "Момент времени получения результата");
         return "redirect:/clientsTable";
     }
 
@@ -242,6 +252,7 @@ public class MainController {
     @RequestMapping(value = {"/addClient"}, method = RequestMethod.POST)
     public String addClientSave(Model model, //
                                 @ModelAttribute("clientForm") ClientForm clientForm) throws SQLException, ClassNotFoundException {
+        logger.log(Level.INFO, "Момент времени завершения ввода команды");
 
         String surname = clientForm.getSurname();
         String name = clientForm.getName();
@@ -258,7 +269,7 @@ public class MainController {
         }
         String error = "All fields are required!";
         model.addAttribute("errorMessage", error);
-
+        logger.log(Level.INFO, "Момент времени получения результата");
         if (authService.getCurrentUser() != null) {
             return "addClient";
         } else {
@@ -268,6 +279,7 @@ public class MainController {
 
     @RequestMapping(value = {"/autoTable"}, method = RequestMethod.GET)
     public String autoTable(Model model, HttpServletRequest request) throws SQLException, ClassNotFoundException {
+        logger.log(Level.INFO, "Момент времени завершения ввода команды");
 
         List<Auto> list = QueryData.getDataFromDb("table_auto", tableMap.get("table_auto"), Auto.class);
 
@@ -285,7 +297,7 @@ public class MainController {
             imagePaths.add(autoImage);
         });
         model.addAttribute("images", imagePaths);
-
+        logger.log(Level.INFO, "Момент времени получения результата");
         if (authService.getCurrentUser() != null) {
             model.addAttribute("userForm", authService.getCurrentUser());
             if (isThemeLight) {
@@ -301,7 +313,9 @@ public class MainController {
     @PostMapping("/autoTable/delete/{id}")
     public String deleteAuto(@PathVariable("id") Long id, Model model
     ) throws SQLException, ClassNotFoundException {
+        logger.log(Level.INFO, "Момент времени завершения ввода команды");
         QueryData.deleteDataFromDb("table_auto", id);
+        logger.log(Level.INFO, "Момент времени получения результата");
         return "redirect:/autoTable";
     }
 
@@ -343,6 +357,7 @@ public class MainController {
     @RequestMapping(value = {"/updateAuto/{id}"}, method = RequestMethod.POST)
     public String updateAutoPost(@PathVariable("id") Long id, Model model, @ModelAttribute("autoForm") AutoForm autoForm, @ModelAttribute("uploadForm") UploadForm uploadForm, HttpServletRequest request, @ModelAttribute("selectedMode") Long modeId
     ) throws Exception {
+        logger.log(Level.INFO, "Момент времени завершения ввода команды");
         List<Mode> listMode = QueryData.getDataFromDb("table_mode", tableMap.get("table_mode"), Mode.class);
         listMode.forEach(mode -> {
             if (mode.getId() == modeId) {
@@ -365,7 +380,7 @@ public class MainController {
         Auto auto = new Auto(id, autoForm.getModel(), autoForm.getSits(), autoForm.getModelYear(), image, autoForm.getMode());
 
         QueryData.updateDataInDb("table_auto", tableMap.get("table_auto"), auto);
-
+        logger.log(Level.INFO, "Момент времени получения результата");
         return "redirect:/autoTable";
     }
 
@@ -400,6 +415,7 @@ public class MainController {
             @ModelAttribute("selectedMode") Long modeId,
             HttpServletRequest request
     ) throws Exception {
+        logger.log(Level.INFO, "Момент времени завершения ввода команды");
         String modelAuto = autoForm.getModel();
         List<Mode> listMode = QueryData.getDataFromDb("table_mode", tableMap.get("table_mode"), Mode.class);
         listMode.forEach(mode -> {
@@ -417,7 +433,7 @@ public class MainController {
         }
         String error = "All fields are required!";
         model.addAttribute("errorMessage", error);
-
+        logger.log(Level.INFO, "Момент времени получения результата");
         if (authService.getCurrentUser() != null) {
             return "addAuto";
         } else {
@@ -443,11 +459,12 @@ public class MainController {
 
     @RequestMapping(value = {"/modeTable"}, method = RequestMethod.GET)
     public String modeTable(Model model) throws SQLException, ClassNotFoundException {
+        logger.log(Level.INFO, "Момент времени завершения ввода команды");
 
         List<Mode> list = QueryData.getDataFromDb("table_mode", tableMap.get("table_mode"), Mode.class);
 
         model.addAttribute("modes", list);
-
+        logger.log(Level.INFO, "Момент времени получения результата");
         if (authService.getCurrentUser() != null) {
             model.addAttribute("userForm", authService.getCurrentUser());
             if (isThemeLight) {
@@ -463,7 +480,9 @@ public class MainController {
     @PostMapping("/modeTable/delete/{id}")
     public String deleteMode(@PathVariable("id") Long id, Model model
     ) throws SQLException, ClassNotFoundException {
+        logger.log(Level.INFO, "Момент времени завершения ввода команды");
         QueryData.deleteDataFromDb("table_mode", id);
+        logger.log(Level.INFO, "Момент времени получения результата");
         return "redirect:/modeTable";
     }
 
@@ -497,11 +516,12 @@ public class MainController {
     @RequestMapping(value = {"/updateMode/{id}"}, method = RequestMethod.POST)
     public String updateModePost(@PathVariable("id") Long id, Model model, @ModelAttribute("modeForm") ModeForm modeForm
     ) throws SQLException, ClassNotFoundException {
+        logger.log(Level.INFO, "Момент времени завершения ввода команды");
 
         Mode mode = new Mode(id, modeForm.getName(), modeForm.getMaxSpeed(), modeForm.getAccelerationTime(), modeForm.getEngineVolume(), modeForm.getGasMileage(), modeForm.getPrice());
 
         QueryData.updateDataInDb("table_mode", tableMap.get("table_mode"), mode);
-
+        logger.log(Level.INFO, "Момент времени получения результата");
         return "redirect:/modeTable";
     }
 
@@ -526,6 +546,7 @@ public class MainController {
     @RequestMapping(value = {"/addMode"}, method = RequestMethod.POST)
     public String addModeSave(Model model, //
                               @ModelAttribute("modeForm") ModeForm modeForm) throws SQLException, ClassNotFoundException {
+        logger.log(Level.INFO, "Момент времени завершения ввода команды");
 
         String name = modeForm.getName();
 
@@ -535,7 +556,7 @@ public class MainController {
         }
         String error = "All fields are required!";
         model.addAttribute("errorMessage", error);
-
+        logger.log(Level.INFO, "Момент времени получения результата");
         if (authService.getCurrentUser() != null) {
             return "addMode";
         } else {
@@ -545,11 +566,12 @@ public class MainController {
 
     @RequestMapping(value = {"/employeesTable"}, method = RequestMethod.GET)
     public String employeesTable(Model model) throws SQLException, ClassNotFoundException {
+        logger.log(Level.INFO, "Момент времени завершения ввода команды");
 
         List<Employee> list = QueryData.getDataFromDb("table_employee", tableMap.get("table_employee"), Employee.class);
 
         model.addAttribute("employees", list);
-
+        logger.log(Level.INFO, "Момент времени получения результата");
         if (Objects.equals(authService.getCurrentUser().getAccessRights(), "director")) {
             if (isThemeLight) {
                 return "employeesTable";
@@ -564,7 +586,9 @@ public class MainController {
     @PostMapping("/employeesTable/delete/{id}")
     public String deleteEmployee(@PathVariable("id") Long id, Model model
     ) throws SQLException, ClassNotFoundException {
+        logger.log(Level.INFO, "Момент времени завершения ввода команды");
         QueryData.deleteDataFromDb("table_employee", id);
+        logger.log(Level.INFO, "Момент времени получения результата");
         return "redirect:/employeesTable";
     }
 
@@ -598,11 +622,12 @@ public class MainController {
     @RequestMapping(value = {"/updateEmployee/{id}"}, method = RequestMethod.POST)
     public String updateEmployeePost(@PathVariable("id") Long id, Model model, @ModelAttribute("employeeForm") EmployeeForm employeeForm
     ) throws SQLException, ClassNotFoundException {
+        logger.log(Level.INFO, "Момент времени завершения ввода команды");
 
         Employee employee = new Employee(id, employeeForm.getSurname(), employeeForm.getName(), employeeForm.getPatr(), employeeForm.getPosition(), employeeForm.getAddress(), employeeForm.getPhone());
 
         QueryData.updateDataInDb("table_employee", tableMap.get("table_employee"), employee);
-
+        logger.log(Level.INFO, "Момент времени получения результата");
         return "redirect:/employeesTable";
     }
 
@@ -627,6 +652,7 @@ public class MainController {
     @RequestMapping(value = {"/addEmployee"}, method = RequestMethod.POST)
     public String addEmployeeSave(Model model, //
                                   @ModelAttribute("employeeForm") EmployeeForm employeeForm) throws SQLException, ClassNotFoundException {
+        logger.log(Level.INFO, "Момент времени завершения ввода команды");
 
         String surname = employeeForm.getSurname();
         String name = employeeForm.getName();
@@ -647,7 +673,7 @@ public class MainController {
         }
         String error = "All fields are required!";
         model.addAttribute("errorMessage", error);
-
+        logger.log(Level.INFO, "Момент времени получения результата");
         if (Objects.equals(authService.getCurrentUser().getAccessRights(), "director")) {
             return "addEmployee";
         } else {
@@ -657,10 +683,11 @@ public class MainController {
 
     @RequestMapping(value = {"/salesTable"}, method = RequestMethod.GET)
     public String salesTable(Model model) throws SQLException, ClassNotFoundException {
+        logger.log(Level.INFO, "Момент времени завершения ввода команды");
         List<Sale> list = QueryData.getDataFromDb("table_sales", tableMap.get("table_sales"), Sale.class);
 
         model.addAttribute("sales", list);
-
+        logger.log(Level.INFO, "Момент времени получения результата");
         if (authService.getCurrentUser() != null) {
             model.addAttribute("userForm", authService.getCurrentUser());
             if (isThemeLight) {
@@ -676,7 +703,9 @@ public class MainController {
     @PostMapping("/salesTable/delete/{id}")
     public String deleteSale(@PathVariable("id") Long id, Model model
     ) throws SQLException, ClassNotFoundException {
+        logger.log(Level.INFO, "Момент времени завершения ввода команды");
         QueryData.deleteDataFromDb("table_sales", id);
+        logger.log(Level.INFO, "Момент времени получения результата");
         return "redirect:/salesTable";
     }
 
@@ -727,6 +756,7 @@ public class MainController {
             @ModelAttribute("selectedClient") Long clientId,
             @ModelAttribute("selectedAuto") Long autoId
     ) throws SQLException, ClassNotFoundException {
+        logger.log(Level.INFO, "Момент времени завершения ввода команды");
         List<Employee> listEmployee = QueryData.getDataFromDb("table_employee", tableMap.get("table_employee"), Employee.class);
         listEmployee.forEach(employee -> {
             if (employee.getId() == employeeId) {
@@ -751,12 +781,13 @@ public class MainController {
         Sale sale = new Sale(id, saleForm.getDate(), saleForm.getEmployee(), saleForm.getClient(), saleForm.getAuto());
 
         QueryData.updateDataInDb("table_sales", tableMap.get("table_sales"), sale);
-
+        logger.log(Level.INFO, "Момент времени получения результата");
         return "redirect:/salesTable";
     }
 
     @RequestMapping(value = {"/addSale"}, method = RequestMethod.GET)
     public String addSaleForm(Model model) throws SQLException, ClassNotFoundException {
+        logger.log(Level.INFO, "Момент времени завершения ввода команды");
 
         SaleForm saleForm = new SaleForm();
         model.addAttribute("saleForm", saleForm);
@@ -768,7 +799,7 @@ public class MainController {
         model.addAttribute("employees", listEmployee);
         model.addAttribute("clients", listClients);
         model.addAttribute("autos", listAuto);
-
+        logger.log(Level.INFO, "Момент времени получения результата");
         if (authService.getCurrentUser() != null) {
             if (isThemeLight) {
                 return "addSale";
@@ -788,6 +819,8 @@ public class MainController {
             @ModelAttribute("selectedClient") Long clientId,
             @ModelAttribute("selectedAuto") Long autoId
     ) throws SQLException, ClassNotFoundException {
+        logger.log(Level.INFO, "Момент времени завершения ввода команды");
+
         Date dateNow = new Date();
         SimpleDateFormat formatForDateNow = new SimpleDateFormat("dd.MM.yyyy");
         String date = formatForDateNow.format(dateNow);
@@ -816,12 +849,13 @@ public class MainController {
 
         QueryData.addDataToDb("table_sales", tableMap.get("table_sales"), saleForm);
 
+        logger.log(Level.INFO, "Момент времени получения результата");
         return "redirect:/salesTable";
     }
 
     @RequestMapping(value = {"/salesTable/createPdf/{id}"}, method = RequestMethod.GET)
     public void createPdf(@PathVariable("id") Long id, Model model, HttpServletResponse response, HttpServletRequest request) throws SQLException, ClassNotFoundException {
-
+        logger.log(Level.INFO, "Момент времени завершения ввода команды");
         List<Sale> list = QueryData.getDataFromDb("table_sales", tableMap.get("table_sales"), Sale.class);
         list.forEach(sale -> {
             if (sale.getId() == id) {
@@ -835,6 +869,6 @@ public class MainController {
                 }
             }
         });
-
+        logger.log(Level.INFO, "Момент времени получения результата");
     }
 }
